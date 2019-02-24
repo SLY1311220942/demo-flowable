@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: demo-flowable
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3316/flowable?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: root
+  devtools:
+    restart:
+      enabled: false
+server:
+  port: 8080
+mybatis:
+  type-aliases-package: com.sly.demo.*.model
+flowable:
+  async-executor-activate: false
+  form:
+    enabled: false
+  content:
+    enabled: false
+  idm:
+    enabled: false
+  dmn:
+    enabled: false
+  cmmn:
+    enabled: false
+  

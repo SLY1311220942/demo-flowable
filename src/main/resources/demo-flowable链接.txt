@@ -1,0 +1,6 @@
+流程定义部署		http://localhost:8080/proDef/toDeployProDef
+流程定义列表		http://localhost:8080/proDef/toProDefList
+流程实例列表		http://localhost:8080/proIns/toProInsList
+流程用户任务列表	http://localhost:8080/proTask/toUserTaskList
+流程组任务列表		http://localhost:8080/proTask/toGroupTaskList
+历史流程实例列表	http://localhost:8080/proIns/toProInsHisList

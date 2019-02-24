@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<script>
+		var webRoot = '[[${#httpServletRequest.getScheme() + "://" + #httpServletRequest.getServerName() + ":" + #httpServletRequest.getServerPort() + #httpServletRequest.getContextPath()}]]';
+	</script>
+
+	<body>
+		<div>
+			<input type="hidden" id="proDefId" name="proDefId" th:value="${proDefId}" />
+			<label for="createUserId">创建用户ID:</label><input id="createUserId" name="createUserId" />
+		</div>
+		<div>
+			<button onclick="createProIns();">提交</button>
+		</div>
+	</body>
+	<script th:src="@{/common.js}"></script>
+	<script th:src="@{/jquery.min.js}"></script>
+	<script>
+		function createProIns() {
+			$.ajax({
+				type: "post",
+				url: webRoot + "/proIns/createProIns",
+				dataType: "json",
+				data: {
+					proDefId: $.trim($("#proDefId").val()),
+					createUserId: $.trim($("#createUserId").val()),
+					isAjax: 1
+				},
+				success: function(data) {
+					alert(data.status + ":" + data.message);
+				}
+			});
+		}
+	</script>
+
+</html>

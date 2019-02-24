@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<script>
+		var webRoot = '[[${#httpServletRequest.getScheme() + "://" + #httpServletRequest.getServerName() + ":" + #httpServletRequest.getServerPort() + #httpServletRequest.getContextPath()}]]';
+	</script>
+
+	<body>
+		<input type="hidden" id="taskId" name="taskId" th:value="${taskId}" />
+		<div>
+			<input type="hidden" id="taskId" name="taskId" th:value="${taskId}" />
+			<label for="groupId">组ID:</label><input id="groupId" name="groupId" />
+		</div>
+		<div>
+			<button onclick="assignGroup();">提交</button>
+		</div>
+	</body>
+	<script th:src="@{/common.js}"></script>
+	<script th:src="@{/jquery.min.js}"></script>
+	<script>
+		function assignGroup() {
+			$.ajax({
+				type: "post",
+				url: webRoot + "/proTask/assignGroup",
+				dataType: "json",
+				data: {
+					taskId: $.trim($("#taskId").val()),
+					groupId: $.trim($("#groupId").val()),
+					isAjax: 1
+				},
+				success: function(data) {
+					alert(data.status + ":" + data.message);
+				}
+			});
+		}
+	</script>
+
+</html>

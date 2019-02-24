@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<script>
+		var webRoot = '[[${#httpServletRequest.getScheme() + "://" + #httpServletRequest.getServerName() + ":" + #httpServletRequest.getServerPort() + #httpServletRequest.getContextPath()}]]';
+	</script>
+
+	<body>
+		<input type="hidden" id="proInsId" name="proInsId" th:value="${proInsId}" />
+		<button onclick="loadProInsHisTaskList();">查询</button>
+		<table id="dataTable" border="1px">
+
+		</table>
+	</body>
+	<script th:src="@{/common.js}"></script>
+	<script th:src="@{/jquery.min.js}"></script>
+	<script>
+		loadProInsHisTaskList();
+
+		function loadProInsHisTaskList() {
+			$.ajax({
+				type: "post",
+				url: webRoot + "/proTask/proInsHisTaskList",
+				dataType: "json",
+				data: {
+					proInsId: $.trim($("#proInsId").val()),
+					isAjax: 1
+				},
+				success: function(data) {
+					var html = new StringBuffer("");
+					html.append("<tr><td>任务ID</td><td>任务名称</td><td>任务定义KEY</td><td>流程实例ID</td><td>流程定义ID</td><td>当前办理人</td><td>创建时间</td><td>删除原因</td><td>操作</td></tr>");
+					for(var i = 0; i < data.length; i++) {
+						html.append("<tr>");
+						html.append("<td>" + data[i].id + "</td>");
+						html.append("<td>" + data[i].name + "</td>");
+						html.append("<td>" + data[i].taskDefinitionKey + "</td>");
+						html.append("<td>" + data[i].processInstanceId + "</td>");
+						html.append("<td>" + data[i].processDefinitionId + "</td>");
+						html.append("<td>" + data[i].assignee + "</td>");
+						html.append("<td>" + data[i].createTimeStr + "</td>");
+						html.append("<td>" + data[i].deleteReason + "</td>");
+						html.append('<td>');
+						
+						html.append('</td>');
+						html.append("</tr>");
+					}
+
+					$("#dataTable").html(html.toString());
+				}
+			});
+		}
+
+		
+	</script>
+
+</html>

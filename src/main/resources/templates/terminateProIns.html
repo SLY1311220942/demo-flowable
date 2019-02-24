@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<script>
+		var webRoot = '[[${#httpServletRequest.getScheme() + "://" + #httpServletRequest.getServerName() + ":" + #httpServletRequest.getServerPort() + #httpServletRequest.getContextPath()}]]';
+	</script>
+	<body>
+		<div>
+			<input type="hidden" id="proInsId" name="proInsId" th:value="${proInsId}" />
+			<label for="deleteReason">终止原因:</label><input id="deleteReason" name="deleteReason" />
+		</div>
+		<div>
+			<button onclick="terminateProIns();">提交</button>
+		</div>
+	</body>
+	<script th:src="@{/common.js}"></script>
+	<script th:src="@{/jquery.min.js}"></script>
+	<script>
+		function terminateProIns(){
+			$.ajax({
+				type: "post",
+				url: webRoot + "/proIns/terminateProIns",
+				dataType: "json",
+				data: {
+					proInsId: $.trim($("#proInsId").val()),
+					deleteReason: $.trim($("#deleteReason").val()),
+					isAjax: 1
+				},
+				success: function(data) {
+					alert(data.status + ":" + data.message);
+				}
+			});
+		}
+	</script>
+</html>

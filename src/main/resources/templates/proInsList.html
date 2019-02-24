@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<script>
+		var webRoot = '[[${#httpServletRequest.getScheme() + "://" + #httpServletRequest.getServerName() + ":" + #httpServletRequest.getServerPort() + #httpServletRequest.getContextPath()}]]';
+	</script>
+
+	<body>
+		<table id="dataTable" border="1px">
+
+		</table>
+	</body>
+	<script th:src="@{/common.js}"></script>
+	<script th:src="@{/jquery.min.js}"></script>
+	<script>
+		loadProInsList();
+
+		function loadProInsList() {
+			$.ajax({
+				type: "post",
+				url: webRoot + "/proIns/proInsList",
+				dataType: "json",
+				data: {
+					isAjax: 1
+				},
+				success: function(data) {
+					var html = new StringBuffer("");
+					html.append("<tr><td>流程实例ID</td><td>流程实例名称</td><td>流程定义ID</td><td>流程定义KEY</td><td>流程定义名称</td><td>流程定义版本</td><td>流程发起人</td><td>流程发起时间</td><td>状态</td><td>操作</td></tr>");
+					for(var i = 0; i < data.length; i++) {
+						html.append("<tr>");
+						html.append("<td>" + data[i].id + "</td>");
+						html.append("<td>" + data[i].name + "</td>");
+						html.append("<td>" + data[i].processDefinitionId + "</td>");
+						html.append("<td>" + data[i].processDefinitionKey + "</td>");
+						html.append("<td>" + data[i].processDefinitionName + "</td>");
+						html.append("<td>" + data[i].processDefinitionVersion + "</td>");
+						html.append("<td>" + data[i].startUserId + "</td>");
+						html.append("<td>" + data[i].startTimeStr + "</td>");
+						html.append("<td>" + data[i].suspensionStateStr + "</td>");
+						html.append('<td>');
+						html.append('<a href="' + webRoot + "/proIns/toProInsPic?proInsId=" + data[i].id + '" target="_blank">查看</a>');
+						html.append('<a style="margin-left: 10px;" href="' + webRoot + "/proIns/toTerminateProIns?proInsId=" + data[i].id + '" target="_blank">终止</a>');
+						if(data[i].suspensionState == 1){
+							//挂起
+							html.append('<a style="margin-left: 10px;" href="javascript:;" onclick="suspendProIns(\'' + data[i].id + '\');">挂起</a>');
+						}else if(data[i].suspensionState == 2){
+							//激活
+							html.append('<a style="margin-left: 10px;" href="javascript:;" onclick="activeProIns(\'' + data[i].id + '\');">激活</a>');
+						}
+						html.append('<a style="margin-left: 10px;" href="' + webRoot + "/proTask/toProInsHisTaskList?proInsId=" + data[i].id + '" target="_blank">历史任务</a>');
+						html.append('</td>');
+						html.append("</tr>");
+					}
+
+					$("#dataTable").html(html.toString());
+				}
+			});
+		}
+		
+		function suspendProIns(proInsId){
+			$.ajax({
+				type: "post",
+				url: webRoot + "/proIns/suspendProIns",
+				dataType: "json",
+				data: {
+					proInsId: proInsId,
+					isAjax: 1
+				},
+				success: function(data) {
+					alert(data.status + ":" + data.message);
+					loadProInsList();
+				}
+			});
+		}
+		
+		function activeProIns(proInsId){
+			$.ajax({
+				type: "post",
+				url: webRoot + "/proIns/activeProIns",
+				dataType: "json",
+				data: {
+					proInsId: proInsId,
+					isAjax: 1
+				},
+				success: function(data) {
+					alert(data.status + ":" + data.message);
+					loadProInsList();
+				}
+			});
+		}
+	</script>
+
+</html>

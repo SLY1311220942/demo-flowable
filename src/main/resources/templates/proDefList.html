@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<script>
+		var webRoot = '[[${#httpServletRequest.getScheme() + "://" + #httpServletRequest.getServerName() + ":" + #httpServletRequest.getServerPort() + #httpServletRequest.getContextPath()}]]';
+	</script>
+
+	<body>
+		<table id="dataTable" border="1px">
+
+		</table>
+	</body>
+	<script th:src="@{/common.js}"></script>
+	<script th:src="@{/jquery.min.js}"></script>
+	<script>
+		loadProDefList();
+
+		function loadProDefList() {
+			$.ajax({
+				type: "post",
+				url: webRoot + "/proDef/proDefList",
+				dataType: "json",
+				data: {
+					isAjax: 1
+				},
+				success: function(data) {
+					var html = new StringBuffer("");
+					html.append("<tr><td>流程定义ID</td><td>流程名称</td><td>流程KEY</td><td>版本</td><td>操作</td></tr>");
+					for(var i = 0; i < data.length; i++) {
+						html.append("<tr>");
+						html.append("<td>" + data[i].id + "</td>");
+						html.append("<td>" + data[i].name + "</td>");
+						html.append("<td>" + data[i].key + "</td>");
+						html.append("<td>" + data[i].version + "</td>");
+						html.append('<td>');
+						html.append('<a href="' + webRoot + "/proDef/toProDefPic?proDefId=" + data[i].id + '" target="_blank">查看</a>');
+						html.append('<a style="margin-left: 10px;" href="' + webRoot + "/proIns/toCreateProIns?proDefId=" + data[i].id + '" target="_blank">发起流程</a>');
+						html.append('</td>');
+						html.append("</tr>");
+					}
+
+					$("#dataTable").html(html.toString());
+				}
+			});
+		}
+	</script>
+
+</html>

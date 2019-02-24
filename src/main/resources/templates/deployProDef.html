@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<script>
+		var webRoot = '[[${#httpServletRequest.getScheme() + "://" + #httpServletRequest.getServerName() + ":" + #httpServletRequest.getServerPort() + #httpServletRequest.getContextPath()}]]';
+	</script>
+
+	<body>
+		<h1>部署流程定义</h1>
+		<form action="/proDef/deployProDef" enctype="multipart/form-data" method="post">
+			<input type="text" name="name" id="name">
+			<input type="file" name="file" id="file">
+			<input type="submit" value="部署">
+		</form>
+	</body>
+	<script th:src="@{/common.js}"></script>
+	<script type="text/javascript" th:src="@{/jquery.min.js}"></script>
+	<script type="text/javascript">
+	</script>
+
+</html>

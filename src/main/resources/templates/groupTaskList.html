@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<script>
+		var webRoot = '[[${#httpServletRequest.getScheme() + "://" + #httpServletRequest.getServerName() + ":" + #httpServletRequest.getServerPort() + #httpServletRequest.getContextPath()}]]';
+	</script>
+
+	<body>
+		<label for="groupId">组ID:</label><input name="groupId" id="groupId" />
+		<button onclick="loadGroupTaskList();">查询</button>
+		<table id="dataTable" border="1px">
+
+		</table>
+	</body>
+	<script th:src="@{/common.js}"></script>
+	<script th:src="@{/jquery.min.js}"></script>
+	<script>
+		loadGroupTaskList();
+
+		function loadGroupTaskList() {
+			$.ajax({
+				type: "post",
+				url: webRoot + "/proTask/groupTaskList",
+				dataType: "json",
+				data: {
+					groupId: $.trim($("#groupId").val()),
+					isAjax: 1
+				},
+				success: function(data) {
+					var html = new StringBuffer("");
+					html.append("<tr><td>任务ID</td><td>任务名称</td><td>任务定义KEY</td><td>流程实例ID</td><td>流程定义ID</td><td>当前办理人</td><td>创建时间</td><td>操作</td></tr>");
+					for(var i = 0; i < data.length; i++) {
+						html.append("<tr>");
+						html.append("<td>" + data[i].id + "</td>");
+						html.append("<td>" + data[i].name + "</td>");
+						html.append("<td>" + data[i].taskDefinitionKey + "</td>");
+						html.append("<td>" + data[i].processInstanceId + "</td>");
+						html.append("<td>" + data[i].processDefinitionId + "</td>");
+						html.append("<td>" + data[i].assignee + "</td>");
+						html.append("<td>" + data[i].createTimeStr + "</td>");
+						html.append('<td>');
+						html.append('<a href="' + webRoot + "/proTask/toCompleteTask?taskId=" + data[i].id + '" target="_blank">提交任务</a>');
+						html.append('<a style="margin-left: 10px;" href="' + webRoot + "/proTask/toAssignGroup?taskId=" + data[i].id + '" target="_blank">分配任务组</a>');
+						html.append('<a style="margin-left: 10px;" href="' + webRoot + "/proTask/toAssignUser?taskId=" + data[i].id + '" target="_blank">分配人员</a>');
+						html.append('<a style="margin-left: 10px;" href="' + webRoot + "/proTask/toClaimGroupTask?taskId=" + data[i].id + '" target="_blank">领取任务</a>');
+						html.append('</td>');
+						html.append("</tr>");
+					}
+
+					$("#dataTable").html(html.toString());
+				}
+			});
+		}
+	</script>
+
+</html>
